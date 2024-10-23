@@ -651,4 +651,4 @@ elif page == "Exercise Tracker":
                 break
 
     st.session_state.cap.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
