@@ -16,6 +16,10 @@ mp_pose = mp.solutions.pose
 if 'count' not in st.session_state:
     st.session_state.count=0
 
+# list of all st.session_state variables:
+#   -  count
+#   -  cap
+#   -  mode
 
 
 
@@ -94,12 +98,18 @@ def main_page():
         unsafe_allow_html=True,
     )
 def exercise_page():
+
+
     # Exercises page with Tracker
-    mode = "lat-raise-left"
+    if st.session_state.count == 0:
+        mode = "lat-raise-left"
+    else:
+        mode = st.session_state.mode
     image = Image.open("GatorAid.png")
     left_co, cent_co,last_co = st.columns(3)
     with cent_co:
         st.image(image, width = 230)
+
 
 
     # Navigation Bar
@@ -156,15 +166,17 @@ def exercise_page():
                     ],
                     key = 'shoulder'
                 )
+            if shoulder_pain > 7:
+                st.warning("We recommend you do not exercise with your amount of pain. Please go see a doctor.",icon="⚠️")
 
 
-            st.markdown("### Lateral Raises")
+            st.markdown("### [Lateral Raises](%s)" % "https://ericrobertsfitness.com/how-to-do-lateral-raises-the-correct-way/")
             st.write("Raise your arms out to the sides until they are at shoulder level, then slowly lower them.")
 
-            st.markdown("### Shoulder Press")
+            st.markdown("### [Shoulder Press](%s)" % "https://ericrobertsfitness.com/how-to-do-dumbbell-shoulder-press-the-correct-guide/")
             st.write("Press weights or resistance upwards above your head and lower them back to shoulder height.")
 
-            st.markdown("### Arm Swing")
+            st.markdown("### [Arm Swing](%s)" % "https://www.yourhousefitness.com/blog/arm-circle-exercise")
             st.write("Gently swing your arms forward and backward, keeping them straight to warm up your shoulders.")
 
         # Knee Section with Description
@@ -197,14 +209,16 @@ def exercise_page():
                     ],
                     key = 'knee',
                 )
+            if knee_pain > 7:
+                st.warning("We recommend you do not exercise with your amount of pain. Please go see a doctor.",icon="⚠️")
 
-            st.markdown("### Quad Stretch")
+            st.markdown("### [Quad Stretch](%s)" % "https://www.youtube.com/watch?v=Uwwuc8pRRc0")
             st.write("Stand on one leg and pull your opposite ankle towards your glutes to stretch your quadriceps.")
 
-            st.markdown("### Hamstring Curl")
+            st.markdown("### [Hamstring Curl](%s)" % "https://www.healthline.com/health/hamstring-curls")
             st.write("Stand and curl your leg backwards, bringing your heel toward your glutes to engage your hamstring.")
 
-            st.markdown("### Squats")
+            st.markdown("### [Squats](%s)" % "https://www.realsimple.com/health/fitness-exercise/workouts/squat-form#:~:text=Sit%20down%20into%20a%20squat,back%20to%20a%20standing%20position.")
             st.write("Lower your body by bending your knees and hips. Then, return to standing position.")
 
         # Bicep Section with Description
@@ -237,13 +251,15 @@ def exercise_page():
                     ],
                     key = 'bicep',
                 )
+            if bicep_pain > 7:
+                st.warning("We recommend you do not exercise with your amount of pain. Please go see a doctor.",icon="⚠️")
 
-            st.markdown("### Bicep Curl")
+            st.markdown("### [Bicep Curl](%s)" % "https://www.mayoclinic.org/healthy-lifestyle/fitness/multimedia/biceps-curl/vid-20084675#:~:text=Campbell%3A%20To%20do%20a%20biceps,front%20of%20your%20upper%20arm.")
             st.write("Hold weights and curl your arms upwards, bringing your palms towards your shoulders to work your biceps.")
 
     # Right Column: Camera Placeholder
     with col2:
-        # Create a placeholder for the camera feedss
+        # Create a placeholder for the camera feed
         camera_feed = st.image([])
 
 
@@ -318,7 +334,7 @@ if page == "Home":
 elif page == "Exercise Tracker":
 
     #initialize all variables by unpacking function
-    camera_feed,mode,col2,shoulder_pain,knee_pain,bicep_pain=exercise_page()
+    camera_feed,st.session_state.mode,col2,shoulder_pain,knee_pain,bicep_pain=exercise_page()
     start = False
     counter = 0
     stage = None  # represents whether or not you are at the down or up part of the curl
@@ -333,11 +349,10 @@ elif page == "Exercise Tracker":
                 #This variable will store the video capture data even through the reruns of the website.
                 st.session_state.cap = cv2.VideoCapture(0)
                 st.session_state.count+=1
-        st.write("Current Exercise: " + mode)
+        st.write("Current Exercise: " + st.session_state.mode)
         st.write("Shoulder Pain: " + str(shoulder_pain))
         st.write("Knee Pain: " + str(knee_pain))
         st.write("Bicep Pain: " + str(bicep_pain))
-
 
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while st.session_state.cap.isOpened():
@@ -383,7 +398,7 @@ elif page == "Exercise Tracker":
                     cv2.putText(image, 'STAGE', (105, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
                     cv2.putText(image, str(stage), (100, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 1,
                                 cv2.LINE_AA)
-                    cv2.putText(image, str(mode), (15, 87), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+                    cv2.putText(image, str(st.session_state.mode), (15, 87), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
                     # Rep data
                     cv2.putText(image, 'REPS', (15, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -405,7 +420,7 @@ elif page == "Exercise Tracker":
                                               mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2)
                                               )
 
-                match (mode):
+                match (st.session_state.mode):
                     case "bicep-curl-left":
                         # get coordinates
                         pointA = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
@@ -524,7 +539,7 @@ elif page == "Exercise Tracker":
                 angle = calculate_angle(pointA, pointB, pointC)
 
                 # calc check angle
-                if mode != "bicep-curl-left" and mode != "bicep-curl-right" and pointA_check:
+                if st.session_state.mode != "bicep-curl-left" and st.session_state.mode != "bicep-curl-right" and pointA_check:
                     angle_check = calculate_angle(pointA_check, pointB_check, pointC_check)
 
                 # visualize
@@ -533,7 +548,7 @@ elif page == "Exercise Tracker":
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
                             )
                 if start:
-                    if mode == "bicep-curl-left" or mode == "bicep-curl-right":
+                    if st.session_state.mode == "bicep-curl-left" or st.session_state.mode == "bicep-curl-right":
 
                         if angle > 135:
                             stage = "down"
@@ -543,11 +558,11 @@ elif page == "Exercise Tracker":
                             counter += 1
                         if counter >= 10:
                             counter = 0
-                            if mode == "bicep-curl-left":
-                                mode = "bicep-curl-right"
+                            if st.session_state.mode == "bicep-curl-left":
+                                st.session_state.mode = "bicep-curl-right"
                             else:
-                                mode = "lat-raise-left"
-                    elif mode == "lat-raise-left" or mode == "lat-raise-right":
+                                st.session_state.mode = "lat-raise-left"
+                    elif st.session_state.mode == "lat-raise-left" or st.session_state.mode == "lat-raise-right":
                         if angle_check < 150:
                             form = "Straighten Elbow"
                         else:
@@ -559,11 +574,11 @@ elif page == "Exercise Tracker":
                                 counter += 1
                             if counter >= 10:
                                 counter = 0
-                                if mode == "lat-raise-left":
-                                    mode = "lat-raise-right"
+                                if st.session_state.mode == "lat-raise-left":
+                                    st.session_state.mode = "lat-raise-right"
                                 else:
-                                    mode = "shoulder-press-left"
-                    elif mode == "shoulder-press-left" or mode == "shoulder-press-right":
+                                    st.session_state.mode = "shoulder-press-left"
+                    elif st.session_state.mode == "shoulder-press-left" or st.session_state.mode == "shoulder-press-right":
                         if angle_check > 115:
                             form = "Move arm inward"
                         elif angle_check < 65:
@@ -577,11 +592,11 @@ elif page == "Exercise Tracker":
                             counter += 1
                         if counter >= 10:
                             counter = 0
-                            if mode == "shoulder-press-left":
-                                mode = "shoulder-press-right"
+                            if st.session_state.mode == "shoulder-press-left":
+                                st.session_state.mode = "shoulder-press-right"
                             else:
-                                mode = "arm-swing-left"
-                    elif mode == "arm-swing-left" or mode == "arm-swing-right":
+                                st.session_state.mode = "arm-swing-left"
+                    elif st.session_state.mode == "arm-swing-left" or st.session_state.mode == "arm-swing-right":
                         if angle_check < 130:
                             form = "Straighten Elbow"
                         else:
@@ -593,11 +608,11 @@ elif page == "Exercise Tracker":
                                 counter += 1
                             if counter >= 10:
                                 counter = 0
-                                if mode == "arm-swing-left":
-                                    mode = "arm-swing-right"
+                                if st.session_state.mode == "arm-swing-left":
+                                    st.session_state.mode = "arm-swing-right"
                                 else:
-                                    mode = "quad-stretch-left"
-                    elif mode == "quad-stretch-left" or mode == "quad-stretch-right" or mode == "hamstring-curl-left" or mode == "hamstring-curl-right":
+                                    st.session_state.mode = "quad-stretch-left"
+                    elif st.session_state.mode == "quad-stretch-left" or st.session_state.mode == "quad-stretch-right" or st.session_state.mode == "hamstring-curl-left" or st.session_state.mode == "hamstring-curl-right":
                         form = "Good"
                         if angle > 95:
                             stage = "down"
@@ -606,15 +621,15 @@ elif page == "Exercise Tracker":
                             counter += 1
                         if counter >= 10:
                             counter = 0
-                            if mode == "quad-stretch-left":
-                                mode = "quad-stretch-right"
-                            elif mode == "quad-stretch-right":
-                                mode = "hamstring-curl-left"
-                            elif mode == "hamstring-curl-left":
-                                mode = "hamstring-curl-right"
-                            elif mode == "hamstring-curl-right":
-                                mode = "squats"
-                    elif mode == "squats":
+                            if st.session_state.mode == "quad-stretch-left":
+                                st.session_state.mode = "quad-stretch-right"
+                            elif st.session_state.mode == "quad-stretch-right":
+                                st.session_state.mode = "hamstring-curl-left"
+                            elif st.session_state.mode == "hamstring-curl-left":
+                                st.session_state.mode = "hamstring-curl-right"
+                            elif st.session_state.mode == "hamstring-curl-right":
+                                st.session_state.mode = "squats"
+                    elif st.session_state.mode == "squats":
                         form = "Good"
                         if angle > 120:
                             stage = "up"
@@ -623,7 +638,7 @@ elif page == "Exercise Tracker":
                             counter += 1
                         if counter >= 10:
                             counter = 0
-                            mode = "bicep-curl-left"
+                            st.session_state.mode = "bicep-curl-left"
             except:
                 pass
 
