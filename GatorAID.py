@@ -348,7 +348,7 @@ elif page == "Exercise Tracker":
         with st.spinner("Loading..."):
             if st.session_state.count == 0:
                 #This variable will store the video capture data even through the reruns of the website.
-                st.session_state.cap = cv2.VideoCapture(0)
+                st.session_state.cap = cv2.VideoCapture(-1)
                 st.session_state.count+=1
         st.write("Current Exercise: " + st.session_state.mode)
         st.write("Shoulder Pain: " + str(shoulder_pain))
