@@ -647,8 +647,8 @@ elif page == "Exercise Tracker":
             camera_feed.image(image, channels="BGR")
 
             # Check for quit signal
-            if cv2.waitKey(10) & 0xFF == ord('q'):
-                break
+            # if cv2.waitKey(10) & 0xFF == ord('q'):
+            #     break
 
     st.session_state.cap.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
