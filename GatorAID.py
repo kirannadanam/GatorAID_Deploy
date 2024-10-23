@@ -11,6 +11,7 @@ mp_pose = mp.solutions.pose
 
 #TO RUN THIS FILE YOU NEED TO RUN THIS COMMAND IN TERMINAL: "streamlit run GatorAID.py"
 
+st.set_page_config(page_title = "GatorAID", page_icon="./babyGatorAID.ico")
 
 #Initialize a variable to stop reruns of streamlit (streamlit reruns whole code when interact with website - we need to stop this)
 if 'count' not in st.session_state:
