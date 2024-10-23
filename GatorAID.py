@@ -348,7 +348,7 @@ elif page == "Exercise Tracker":
         with st.spinner("Loading..."):
             if st.session_state.count == 0:
                 #This variable will store the video capture data even through the reruns of the website.
-                st.session_state.cap = cv2.VideoCapture(2)
+                st.session_state.cap = cv2.VideoCapture(1)
                 if not st.session_state.cap.isOpened():
                     st.write("Error: Unable to access the camera")
                 st.session_state.count+=1
