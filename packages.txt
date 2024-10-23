@@ -1,1 +1,1 @@
-libGL
+libGL.so.1
