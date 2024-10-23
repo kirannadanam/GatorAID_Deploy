@@ -1,11 +1,12 @@
 import streamlit as st
-import cv2
 import mediapipe as mp
 import numpy as np
-mp_drawing = mp.solutions.drawing_utils
-mp_pose = mp.solutions.pose
 import math
 from PIL import Image
+import cv2
+
+mp_drawing = mp.solutions.drawing_utils
+mp_pose = mp.solutions.pose
 
 
 #TO RUN THIS FILE YOU NEED TO RUN THIS COMMAND IN TERMINAL: "streamlit run GatorAID.py"
