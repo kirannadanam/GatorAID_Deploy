@@ -374,6 +374,8 @@ elif page == "Exercise Tracker":
             # Recolor back to BGR
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            if not st.session_state.cap.isOpened():
+                image = st.camera_input()
 
             # Extract landmarks and visualize if pose is detected
             try:
