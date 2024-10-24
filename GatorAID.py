@@ -4,6 +4,8 @@ import numpy as np
 import math
 from PIL import Image
 import cv2
+from streamlit_webrtc import webrtc_streamer
+
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -350,7 +352,7 @@ elif page == "Exercise Tracker":
                 #This variable will store the video capture data even through the reruns of the website.
                 st.session_state.cap = cv2.VideoCapture(0)
                 if not st.session_state.cap.isOpened():
-                    st.write("Error: Unable to access the camera")
+                    webrtc_streamer(key="sample")
                 st.session_state.count+=1
         st.write("Current Exercise: " + st.session_state.mode)
         st.write("Shoulder Pain: " + str(shoulder_pain))
@@ -374,8 +376,6 @@ elif page == "Exercise Tracker":
             # Recolor back to BGR
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            if not st.session_state.cap.isOpened():
-                image = st.camera_input()
 
             # Extract landmarks and visualize if pose is detected
             try:
