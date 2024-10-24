@@ -351,10 +351,9 @@ elif page == "Exercise Tracker":
             if st.session_state.count == 0:
                 #This variable will store the video capture data even through the reruns of the website.
                 st.session_state.cap = cv2.VideoCapture(0)
-                st.write(not st.session_state.cap.isOpened())
-                if not st.session_state.cap.isOpened():
-                    webrtc_streamer(key="sample")
                 st.session_state.count+=1
+        if not st.session_state.cap.isOpened():
+            webrtc_streamer(key="sample")
         st.write("Current Exercise: " + st.session_state.mode)
         st.write("Shoulder Pain: " + str(shoulder_pain))
         st.write("Knee Pain: " + str(knee_pain))
